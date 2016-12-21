@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
+    useLibrary 'org.apache.http.legacy'//android 6.0(api 23) SDK，Android的网络请求强制使用HttpUrlConnection,并且SDK中也已经移除了HttpClient。
 
     defaultConfig {
         applicationId "com.afei.news"
@@ -30,5 +31,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
     compile project(':SlidingMenuLibrary')
-    compile 'org.xutils:xutils:3.3.40'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.jiechic.library:xUtils:2.6.14'
 }
