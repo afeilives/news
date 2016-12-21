@@ -5,12 +5,12 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <android.support.v4.view.ViewPager
+    <com.afei.news.view.NoScrollViewPager
         android:id="@+id/vp_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-    </android.support.v4.view.ViewPager>
+    </com.afei.news.view.NoScrollViewPager>
 
     <RadioGroup
         android:id="@+id/rg_bottom_tab"
@@ -21,26 +21,31 @@
         android:orientation="horizontal">
 
         <RadioButton
+            android:id="@+id/rbtn_home"
             style="@style/AppTheme.BottomTabStyle"
             android:drawableTop="@drawable/radiobutton_bottom_tab_home_selector"
             android:text="首页"></RadioButton>
 
         <RadioButton
+            android:id="@+id/rbtn_newscenter"
             style="@style/AppTheme.BottomTabStyle"
             android:drawableTop="@drawable/radiobutton_bottom_tab_newscenter_selector"
             android:text="新闻中心"></RadioButton>
 
         <RadioButton
+            android:id="@+id/rbtn_govaffair"
             style="@style/AppTheme.BottomTabStyle"
             android:drawableTop="@drawable/radiobutton_bottom_tab_govaffairs_selector"
             android:text="政务"></RadioButton>
 
         <RadioButton
+            android:id="@+id/rbtn_smartservice"
             style="@style/AppTheme.BottomTabStyle"
             android:drawableTop="@drawable/radiobutton_bottom_tab_smartservice_selector"
             android:text="智慧服务"></RadioButton>
 
         <RadioButton
+            android:id="@+id/rbtn_setting"
             style="@style/AppTheme.BottomTabStyle"
             android:drawableTop="@drawable/radiobutton_bottom_tab_setting_selector"
             android:text="设置"></RadioButton>
