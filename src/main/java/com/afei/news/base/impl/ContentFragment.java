@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
+import com.afei.news.MainActivity;
 import com.afei.news.R;
 import com.afei.news.base.BaseFragment;
 import com.afei.news.base.BasePager;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
 
@@ -58,17 +60,20 @@ public class ContentFragment extends BaseFragment {
                     //首页
                     case R.id.rbtn_home:
                         vpContent.setCurrentItem(0, false);//设置当前页面并禁用viewpager的平滑效果
+                        setSlidingMenuEable(false);
                         basePagers.get(0).initData();//初始化该条目页面的数据
                         break;
                     //新闻中心
                     case R.id.rbtn_newscenter:
                         vpContent.setCurrentItem(1, false);//禁用viewpager的平滑效果
+                        setSlidingMenuEable(true);
                         basePagers.get(1).initData();//初始化该条目页面的数据
 
                         break;
                     //政务
                     case R.id.rbtn_govaffair:
                         vpContent.setCurrentItem(2, false);//禁用viewpager的平滑效果
+                        setSlidingMenuEable(true);
                         basePagers.get(2).initData();//初始化该条目页面的数据
 
                         break;
@@ -76,6 +81,7 @@ public class ContentFragment extends BaseFragment {
                     //智慧服务
                     case R.id.rbtn_smartservice:
                         vpContent.setCurrentItem(3, false);//禁用viewpager的平滑效果
+                        setSlidingMenuEable(true);
                         basePagers.get(3).initData();//初始化该条目页面的数据
 
                         break;
@@ -83,6 +89,7 @@ public class ContentFragment extends BaseFragment {
                     //设置
                     case R.id.rbtn_setting:
                         vpContent.setCurrentItem(4, false);//禁用viewpager的平滑效果
+                        setSlidingMenuEable(false);
                         basePagers.get(4).initData();//初始化该条目页面的数据
 
                         break;
@@ -96,6 +103,7 @@ public class ContentFragment extends BaseFragment {
         //默认显示首页
         vpContent.setCurrentItem(0);
         basePagers.get(0).initData();//初始化首页的数据
+        setSlidingMenuEable(false);//禁用侧边栏
     }
 
     class ContentPagerAdapter extends PagerAdapter {
@@ -121,5 +129,20 @@ public class ContentFragment extends BaseFragment {
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
         }
+    }
+
+    /**
+     * 设置侧边栏是否可用
+     * @param eable
+     */
+    public void setSlidingMenuEable(boolean eable){
+        MainActivity mainActivity = (MainActivity) mActivity;
+        SlidingMenu slidingMenu = mainActivity.getSlidingMenu();//得到SlidingMenu对象
+        if(!eable){
+            slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        }else {
+            slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        }
+
     }
 }
