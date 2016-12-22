@@ -17,8 +17,8 @@ import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 public class MainActivity extends SlidingFragmentActivity {
 
 
-    private final String tag_menu = "TAG_MENU";
-    private final String tag_content = "TAG_CONTENT";
+    private final String TAG_MENU = "TAG_MENU";
+    private final String TAG_CONTENT = "TAG_CONTENT";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,10 +47,22 @@ public class MainActivity extends SlidingFragmentActivity {
         FragmentManager sfm = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = sfm.beginTransaction();//开始事务
         //用LeftMenuFragment替换掉左侧栏
-        fragmentTransaction.replace(R.id.fl_left_menu,new LeftMenuFragment(), tag_menu);
+        fragmentTransaction.replace(R.id.fl_left_menu,new LeftMenuFragment(), TAG_MENU);
         //用ContentFragment替换掉主界面
-        fragmentTransaction.replace(R.id.fl_main,new ContentFragment(), tag_content);
+        fragmentTransaction.replace(R.id.fl_main,new ContentFragment(), TAG_CONTENT);
         fragmentTransaction.commit();//提交事务
+
+    }
+
+    /**
+     * 获取侧边栏的Fragment
+     * @return
+     */
+    public LeftMenuFragment getLeftMenuFragment() {
+        //获取fragment管理器
+        FragmentManager sfm = getSupportFragmentManager();
+        LeftMenuFragment fragment = (LeftMenuFragment) sfm.findFragmentByTag(TAG_MENU);
+        return fragment;
 
     }
 }

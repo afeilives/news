@@ -1,10 +1,10 @@
 package com.afei.news.base.impl;
 
 import android.app.Activity;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afei.news.MainActivity;
 import com.afei.news.base.BasePager;
 import com.afei.news.domain.NewsMenuData;
 import com.afei.news.global.Constants;
@@ -45,15 +45,12 @@ public class NewsCenterPager extends BasePager {
             @Override
             public void onSuccess(ResponseInfo<String> responseInfo) {
                 String result = responseInfo.result;//获取json字符串
-                Log.d("NewsCenterPager",result);
                 processResult(result);
 
-//                Log.d("NewsCenterPager","onsuccess");
             }
 
             @Override
             public void onFailure(HttpException error, String msg) {
-                Log.d("NewsCenterPager",msg);
                 error.printStackTrace();
                 Toast.makeText(mActivity,msg,Toast.LENGTH_SHORT);
 
@@ -68,12 +65,16 @@ public class NewsCenterPager extends BasePager {
      * 解析从服务器拿到的数据：gson解析
      */
     private void processResult(String result) {
-        Log.d("haha","111111111");
         Gson gSon = new Gson();
-        Log.d("haha","222222222222");
         NewsMenuData newsMenuData = gSon.fromJson(result, NewsMenuData.class);
-        Log.d("haha","3333333333");
        String data =  newsMenuData.getData().toString();
-        Log.d("haha","44444444");
+
+        //获取侧边栏对象，把解析的数据设置给侧边栏
+        MainActivity mainActivity = (MainActivity) mActivity;
+        LeftMenuFragment leftMenuFragment = mainActivity.getLeftMenuFragment();
+        leftMenuFragment.setData(newsMenuData.getData());
+
+
+
     }
 }
