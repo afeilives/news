@@ -2,6 +2,7 @@ package com.afei.news.base.impl;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class LeftMenuFragment extends BaseFragment {
     private ArrayList<String> menuTitles = new ArrayList<String>();
+    private int mCurrentPos;
 
     @ViewInject(R.id.lv_left_menu)
     private ListView lvLeftMneu;
@@ -35,6 +37,7 @@ public class LeftMenuFragment extends BaseFragment {
     }
 
 
+    //侧边栏listView的适配器
     class LeftMenuAdapter extends BaseAdapter {
 
         @Override
@@ -58,6 +61,11 @@ public class LeftMenuFragment extends BaseFragment {
             View view = View.inflate(mActivity, R.layout.lv_item_left_menu, null);
             TextView textView =  (TextView) view.findViewById(R.id.tv_menu);
             textView.setText(title);
+            if (mCurrentPos==position){
+                textView.setEnabled(true);
+            }else{
+                textView.setEnabled(false);
+            }
             return view;
         }
     }
@@ -74,8 +82,15 @@ public class LeftMenuFragment extends BaseFragment {
             menuTitles.add(data.getTitle());//把解析数据中的title取出并存入ArrayList集合中
 
         }
-        LeftMenuAdapter mAdapter = new LeftMenuAdapter();
+        final LeftMenuAdapter mAdapter = new LeftMenuAdapter();
         lvLeftMneu.setAdapter(mAdapter);
+        lvLeftMneu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mCurrentPos = position;
+                mAdapter.notifyDataSetChanged();
+            }
+        });
 
     }
 }

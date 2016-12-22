@@ -8,10 +8,10 @@
         android:id="@+id/tv_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/menu_arr_normal"
+        android:drawableLeft="@drawable/arrows_left_menu_selector"
         android:drawablePadding="5dp"
         android:padding="15dp"
-        android:textColor="#fff"
+        android:textColor="@color/txt_left_menu_selector"
         android:textSize="24sp"/>
 
 </LinearLayout>
