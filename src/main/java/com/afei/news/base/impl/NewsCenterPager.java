@@ -1,6 +1,7 @@
 package com.afei.news.base.impl;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.afei.news.MainActivity;
@@ -12,6 +13,7 @@ import com.afei.news.base.impl.menudetail.PhotoMenuDetailPager;
 import com.afei.news.base.impl.menudetail.TopicMenuDetailPager;
 import com.afei.news.domain.NewsMenuData;
 import com.afei.news.global.Constants;
+import com.afei.news.utils.CacheUtils;
 import com.google.gson.Gson;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -35,6 +37,13 @@ public class NewsCenterPager extends BasePager {
     @Override
     public void initData() {
         tvTitle.setText("新闻");
+
+        //看是否有缓存，有的话解析缓存
+        String cache = CacheUtils.getCache(Constants.CATEGORIES_URL,mActivity);
+        if (!TextUtils.isEmpty(cache)){
+            processResult(cache);
+        }
+        //此处还要 从服务器解析数据的目的是：刷新缓存，优化用户体验
         getDataFromServer();
     }
 
@@ -49,6 +58,7 @@ public class NewsCenterPager extends BasePager {
             public void onSuccess(ResponseInfo<String> responseInfo) {
                 String result = responseInfo.result;//获取json字符串
                 processResult(result);
+                CacheUtils.setCache(Constants.CATEGORIES_URL,result,mActivity);//写缓存
 
             }
 
