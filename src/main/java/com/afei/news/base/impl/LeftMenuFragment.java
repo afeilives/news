@@ -7,13 +7,14 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.afei.news.MainActivity;
 import com.afei.news.R;
 import com.afei.news.base.BaseFragment;
 import com.afei.news.domain.NewsMenuData;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,11 +23,12 @@ import java.util.List;
  */
 
 public class LeftMenuFragment extends BaseFragment {
-    private ArrayList<String> menuTitles = new ArrayList<String>();
+    private List<NewsMenuData.DataBean> menuData;
     private int mCurrentPos;
 
     @ViewInject(R.id.lv_left_menu)
     private ListView lvLeftMneu;
+    private LeftMenuAdapter mAdapter;
 
     @Override
     //初始化侧边栏布局
@@ -42,12 +44,12 @@ public class LeftMenuFragment extends BaseFragment {
 
         @Override
         public int getCount() {
-            return menuTitles.size();
+            return menuData.size();
         }
 
         @Override
-        public String getItem(int position) {
-            return menuTitles.get(position);
+        public NewsMenuData.DataBean getItem(int position) {
+            return menuData.get(position);
         }
 
         @Override
@@ -57,12 +59,12 @@ public class LeftMenuFragment extends BaseFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            String title = getItem(position);
+            NewsMenuData.DataBean dataBean = getItem(position);
             View view = View.inflate(mActivity, R.layout.lv_item_left_menu, null);
             TextView textView =  (TextView) view.findViewById(R.id.tv_menu);
-            textView.setText(title);
+            textView.setText(dataBean.getTitle());
             if (mCurrentPos==position){
-                textView.setEnabled(true);
+                textView.setEnabled(true);//当前位置等于正在绘制的textview时，把textView状态设为enable
             }else{
                 textView.setEnabled(false);
             }
@@ -76,21 +78,37 @@ public class LeftMenuFragment extends BaseFragment {
      * @param newsMenuData
      */
     public void setData(List<NewsMenuData.DataBean> newsMenuData) {
-
-        for (NewsMenuData.DataBean data : newsMenuData){
-
-            menuTitles.add(data.getTitle());//把解析数据中的title取出并存入ArrayList集合中
-
-        }
-        final LeftMenuAdapter mAdapter = new LeftMenuAdapter();
+        menuData = newsMenuData;
+        mAdapter = new LeftMenuAdapter();
         lvLeftMneu.setAdapter(mAdapter);
         lvLeftMneu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mCurrentPos = position;
-                mAdapter.notifyDataSetChanged();
+                mCurrentPos = position;//记录当前的位置
+                mAdapter.notifyDataSetChanged();//刷新适配器
+
+                //通知新闻中心，准备菜单详情页
+                prepareCurrentMenuDetailPager(position);
+
+                //当点击title关闭侧边栏
+                MainActivity mainActivity = (MainActivity) mActivity;
+                SlidingMenu slidingMenu = mainActivity.getSlidingMenu();
+                slidingMenu.toggle();//侧边栏的开关（如果开就关，如果关就开）
             }
         });
 
+    }
+
+    /**
+     * 准备当前菜单条目的详情页
+     */
+    private void prepareCurrentMenuDetailPager(int position) {
+        MainActivity mainActivity = (MainActivity) mActivity;
+        //获取contentFragment
+        ContentFragment contentFragment = mainActivity.getContentFragment();
+        //获取新闻中心页面
+        NewsCenterPager newsCenterPager = contentFragment.getNewsCenterPager();
+        //为新闻中心页面设置菜单详情页
+        newsCenterPager.setCurrentMenuDetailPager(position);
     }
 }

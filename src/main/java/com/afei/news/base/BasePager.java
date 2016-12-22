@@ -43,7 +43,7 @@ public abstract class BasePager {
             public void onClick(View v) {
                 MainActivity mainActivity = (MainActivity) mActivity;
                 SlidingMenu slidingMenu = mainActivity.getSlidingMenu();
-                slidingMenu.setVisibility(View.VISIBLE);
+               slidingMenu.toggle();//侧边栏的开关（如果开就关，如果关就开）
             }
         });
 

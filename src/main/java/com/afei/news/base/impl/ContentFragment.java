@@ -106,6 +106,13 @@ public class ContentFragment extends BaseFragment {
         setSlidingMenuEable(false);//禁用侧边栏
     }
 
+    /**
+     * 获取新闻中心页面
+     */
+    public NewsCenterPager getNewsCenterPager() {
+        return (NewsCenterPager) basePagers.get(1);
+    }
+
     class ContentPagerAdapter extends PagerAdapter {
         @Override
         public int getCount() {
