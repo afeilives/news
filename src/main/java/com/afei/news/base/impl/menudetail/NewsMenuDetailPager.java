@@ -1,11 +1,21 @@
 package com.afei.news.base.impl.menudetail;
 
 import android.app.Activity;
-import android.view.Gravity;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.TextView;
+import android.view.ViewGroup;
 
+import com.afei.news.MainActivity;
+import com.afei.news.R;
 import com.afei.news.base.BaseMenuDetailPager;
+import com.afei.news.domain.NewsMenuData;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 新闻详情页
@@ -13,15 +23,97 @@ import com.afei.news.base.BaseMenuDetailPager;
  */
 
 public class NewsMenuDetailPager extends BaseMenuDetailPager {
-    public NewsMenuDetailPager(Activity activity) {
+    private List<NewsMenuData.DataBean.ChildrenBean> tabDatas;//标签名,遍历这个集合就知道要几个标签页了
+    private ArrayList<TabMenuDetailPager> tabPagers;//标签页的集合
+    @ViewInject(R.id.vp_news_menu_detail)
+    private ViewPager vpNewsDetail;
+    public NewsMenuDetailPager(Activity activity, List<NewsMenuData.DataBean.ChildrenBean> children) {
         super(activity);
+        tabDatas = children;
     }
 
     @Override
     public View initView() {
-        TextView textView = new TextView(mActivity);
-        textView.setText("新闻详情页");
-        textView.setGravity(Gravity.CENTER);
-        return textView;
+       View view = View.inflate(mActivity, R.layout.pager_menu_detail_news,null);
+        ViewUtils.inject(this,view);
+        return view;
+    }
+
+    @Override
+    public void initData() {
+
+        //初始化n个标签页
+        tabPagers = new ArrayList<TabMenuDetailPager>();
+        for (NewsMenuData.DataBean.ChildrenBean tabData: tabDatas
+             ) {
+            TabMenuDetailPager tabMenuDetailPager = new TabMenuDetailPager(mActivity);
+            tabPagers.add(tabMenuDetailPager);
+        }
+
+        vpNewsDetail.setAdapter(new NewsDetailPagerAdapter());
+
+        /*为标签页添加页面滑动监听。当滑动到第一个页面时，把侧边栏设为可用，其他页面设为不可用，
+        这样做避免了侧边栏拦截标签页的滑动事件
+         */
+        vpNewsDetail.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    //第一个页面时，侧边栏可用
+                    setSlidingMenuEable(true);
+
+                }else {
+                    //其他页面时，侧边栏不可用
+                    setSlidingMenuEable(false);
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    private class NewsDetailPagerAdapter extends PagerAdapter {
+        @Override
+        public int getCount() {
+            return tabPagers.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            TabMenuDetailPager TabMenuDetailPager = tabPagers.get(position);
+            container.addView(TabMenuDetailPager.mRootView);//每个viewpager容器维护一个标签页
+            return TabMenuDetailPager.mRootView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+    }
+    /**
+     * 设置侧边栏是否可用
+     * @param eable
+     */
+    public void setSlidingMenuEable(boolean eable){
+        MainActivity mainActivity = (MainActivity) mActivity;
+        SlidingMenu slidingMenu = mainActivity.getSlidingMenu();//得到SlidingMenu对象
+        if(!eable){
+            slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        }else {
+            slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        }
+
     }
 }

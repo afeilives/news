@@ -97,6 +97,7 @@ public class LeftMenuFragment extends BaseFragment {
             }
         });
 
+        mCurrentPos = 0;//重置侧边栏的默认选择条目为第一个
     }
 
     /**

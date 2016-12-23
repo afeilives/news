@@ -16,7 +16,7 @@ public abstract class BaseMenuDetailPager {
     public BaseMenuDetailPager(Activity activity) {
         mActivity = activity;
         mRootView = initView();
-    }
+}
 
     /**
      * 初始化布局

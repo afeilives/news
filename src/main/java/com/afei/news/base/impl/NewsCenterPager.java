@@ -30,6 +30,8 @@ import java.util.ArrayList;
 
 public class NewsCenterPager extends BasePager {
     public ArrayList<BaseMenuDetailPager> mMenuDetailPagers;
+    public NewsMenuData newsMenuData;
+
     public NewsCenterPager(Activity activity) {
         super(activity);
     }
@@ -78,8 +80,7 @@ public class NewsCenterPager extends BasePager {
      */
     private void processResult(String result) {
         Gson gSon = new Gson();
-        NewsMenuData newsMenuData = gSon.fromJson(result, NewsMenuData.class);
-        String data = newsMenuData.getData().toString();
+        newsMenuData = gSon.fromJson(result, NewsMenuData.class);
 
         //获取侧边栏对象，把解析的数据设置给侧边栏
         MainActivity mainActivity = (MainActivity) mActivity;
@@ -88,7 +89,7 @@ public class NewsCenterPager extends BasePager {
 
         //初始化侧边栏的菜单详情页
         mMenuDetailPagers = new ArrayList<BaseMenuDetailPager>();
-        mMenuDetailPagers.add(new NewsMenuDetailPager(mActivity));
+        mMenuDetailPagers.add(new NewsMenuDetailPager(mActivity, newsMenuData.getData().get(0).getChildren()));
         mMenuDetailPagers.add(new TopicMenuDetailPager(mActivity));
         mMenuDetailPagers.add(new PhotoMenuDetailPager(mActivity));
         mMenuDetailPagers.add(new InteractMenuDetailPager(mActivity));
@@ -104,8 +105,12 @@ public class NewsCenterPager extends BasePager {
      */
     public void setCurrentMenuDetailPager(int position) {
         BaseMenuDetailPager baseMenuDetailPager = mMenuDetailPagers.get(position);
+        baseMenuDetailPager.initData();
         //清除framelayout上所有的view
         flContent.removeAllViews();
         flContent.addView(baseMenuDetailPager.mRootView);
+
+        //设置标题
+        tvTitle.setText(newsMenuData.getData().get(position).getTitle());
     }
 }
