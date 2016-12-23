@@ -33,4 +33,5 @@ dependencies {
     compile project(':SlidingMenuLibrary')
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.jiechic.library:xUtils:2.6.14'
+    compile project(':ViewPagerIndicatorLibrary')
 }

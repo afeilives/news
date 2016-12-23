@@ -13,6 +13,8 @@ import com.afei.news.domain.NewsMenuData;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +27,13 @@ import java.util.List;
 public class NewsMenuDetailPager extends BaseMenuDetailPager {
     private List<NewsMenuData.DataBean.ChildrenBean> tabDatas;//标签名,遍历这个集合就知道要几个标签页了
     private ArrayList<TabMenuDetailPager> tabPagers;//标签页的集合
+    @ViewInject(R.id.vpi_tabpager_title)
+    private TabPageIndicator mTabPageIndicator;//标签页指示器
+
     @ViewInject(R.id.vp_news_menu_detail)
     private ViewPager vpNewsDetail;
+    private int currentItem;
+
     public NewsMenuDetailPager(Activity activity, List<NewsMenuData.DataBean.ChildrenBean> children) {
         super(activity);
         tabDatas = children;
@@ -46,16 +53,20 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
         tabPagers = new ArrayList<TabMenuDetailPager>();
         for (NewsMenuData.DataBean.ChildrenBean tabData: tabDatas
              ) {
-            TabMenuDetailPager tabMenuDetailPager = new TabMenuDetailPager(mActivity);
+            TabMenuDetailPager tabMenuDetailPager = new TabMenuDetailPager(mActivity,tabData.getTitle());
             tabPagers.add(tabMenuDetailPager);
         }
 
         vpNewsDetail.setAdapter(new NewsDetailPagerAdapter());
 
+        //要在viewpager设置完数据后，关联viewpager
+        mTabPageIndicator.setViewPager(vpNewsDetail);//把标签页（TabMenuDetailPager）和标题（TabPageIndicator）关联
+
+
         /*为标签页添加页面滑动监听。当滑动到第一个页面时，把侧边栏设为可用，其他页面设为不可用，
         这样做避免了侧边栏拦截标签页的滑动事件
          */
-        vpNewsDetail.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mTabPageIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -80,6 +91,13 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
     }
 
     private class NewsDetailPagerAdapter extends PagerAdapter {
+
+        //重写此方法，返回指示器的标题
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabDatas.get(position).getTitle();
+        }
+
         @Override
         public int getCount() {
             return tabPagers.size();
@@ -92,9 +110,10 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            TabMenuDetailPager TabMenuDetailPager = tabPagers.get(position);
-            container.addView(TabMenuDetailPager.mRootView);//每个viewpager容器维护一个标签页
-            return TabMenuDetailPager.mRootView;
+            TabMenuDetailPager tabMenuDetailPager = tabPagers.get(position);
+            container.addView(tabMenuDetailPager.mRootView);//每个viewpager容器维护一个标签页
+            tabMenuDetailPager.initData();//初始化标签页数据
+            return tabMenuDetailPager.mRootView;
         }
 
         @Override
@@ -115,5 +134,13 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
             slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         }
 
+    }
+
+
+    @OnClick(R.id.iv_next_tab)
+    public void nextTab(View view){
+        currentItem = vpNewsDetail.getCurrentItem();
+        currentItem++;
+        vpNewsDetail.setCurrentItem(currentItem);
     }
 }
