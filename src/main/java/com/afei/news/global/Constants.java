@@ -5,6 +5,6 @@ package com.afei.news.global;
  */
 
 public class Constants {
-    public static final String SERVER_URL = "http://192.168.56.1:8080";
-    public static final String CATEGORIES_URL = SERVER_URL+"/zhbj/categories.json";
+    public static final String SERVER_URL = "http://10.0.2.2:8080/zhbj";
+    public static final String CATEGORIES_URL = SERVER_URL+"/categories.json";
 }

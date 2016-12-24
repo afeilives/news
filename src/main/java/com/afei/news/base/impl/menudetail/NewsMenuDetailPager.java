@@ -53,7 +53,7 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
         tabPagers = new ArrayList<TabMenuDetailPager>();
         for (NewsMenuData.DataBean.ChildrenBean tabData: tabDatas
              ) {
-            TabMenuDetailPager tabMenuDetailPager = new TabMenuDetailPager(mActivity,tabData.getTitle());
+            TabMenuDetailPager tabMenuDetailPager = new TabMenuDetailPager(mActivity,tabData);
             tabPagers.add(tabMenuDetailPager);
         }
 
@@ -137,6 +137,10 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
     }
 
 
+    /**
+     * 此方法用于将标签切换到下一标签页
+     * @param view
+     */
     @OnClick(R.id.iv_next_tab)
     public void nextTab(View view){
         currentItem = vpNewsDetail.getCurrentItem();
