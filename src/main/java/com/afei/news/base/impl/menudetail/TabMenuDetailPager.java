@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.afei.news.R;
@@ -44,8 +45,8 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
     private  TextView tvTopNewsTitle;
     @ViewInject(R.id.vp_top_news)
     private ViewPager vpTopNews;
-//    @ViewInject(R.id.lv_list_news)
-//    private ListView lvListNews;
+    @ViewInject(R.id.lv_list_news)
+    private ListView lvListNews;
     private String mUrl;
     private ArrayList<TabDetailData.DataBean.TopnewsBean> topNews;
     private ArrayList<TabDetailData.DataBean.NewsBean> listNews;
@@ -61,6 +62,9 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
     public View initView() {
         View view = View.inflate(mActivity, R.layout.pager_tab_detail,null);
         ViewUtils.inject(this,view);
+        View listHeader = View.inflate(mActivity, R.layout.lv_header_list_news, null);
+        lvListNews.addHeaderView(listHeader);
+        ViewUtils.inject(this,listHeader);//注入listview的头布局(listHeader)事件
         return view;
     }
 
@@ -79,18 +83,18 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
         topNewsCirclePageIndicator.setViewPager(vpTopNews);//为圆圈指示器绑定ViewPager
         tvTopNewsTitle.setText(topNews.get(0).getTitle());//初始化第一个头条新闻
         topNewsCirclePageIndicator.onPageSelected(0);//调整小圆点不会来的bug
+
+        //此处要为指示器设置页面滑动监听，而不是给ViewPager
         topNewsCirclePageIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
-
             @Override
             public void onPageSelected(int position) {
                 tvTopNewsTitle.setText(topNews.get(position).getTitle());//设置头条新闻的标题
 
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {
 
@@ -98,7 +102,7 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
         });
 
 
-//        lvListNews.setAdapter(new ListNewsAdapter());
+        lvListNews.setAdapter(new ListNewsAdapter());
 
     }
 
@@ -213,7 +217,7 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
                 viewHolder = (ViewHolder) view.getTag();
             }
             //设置listview的item数据
-            bitmapUtils.display(viewHolder.imageView,listNews.get(position).getUrl());
+            bitmapUtils.display(viewHolder.imageView,listNews.get(position).getListimage());
             viewHolder.tvTitle.setText(listNews.get(position).getTitle());
             viewHolder.tvDate.setText(listNews.get(position).getPubdate());
 

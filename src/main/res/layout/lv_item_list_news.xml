@@ -7,14 +7,19 @@
         android:id="@+id/iv_list_news_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/image_demo"/>
+        android:background="#fcc"
+        android:padding="2dp"
+        android:src="@drawable/image_demo"
+        android:scaleType="centerCrop"/>
     <TextView
         android:id="@+id/tv_list_news_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="你好呵呵哈哈哈或哈或哈哈或哈哈哈啊啊哈哈哈哈哈哈"
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:maxLines="3"
+        android:textColor="#000"
+        android:padding="5dp"
         android:ellipsize="end"
        android:layout_toRightOf="@id/iv_list_news_img"/>
     <TextView

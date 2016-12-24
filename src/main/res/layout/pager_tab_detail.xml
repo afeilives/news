@@ -3,11 +3,10 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
-    <include layout="@layout/lv_header_list_news"></include>
 
-    <!--<ListView-->
-        <!--android:id="@+id/lv_list_news"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"></ListView>-->
+    <ListView
+        android:id="@+id/lv_list_news"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
 
 </LinearLayout>
