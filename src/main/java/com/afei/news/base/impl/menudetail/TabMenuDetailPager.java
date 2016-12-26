@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afei.news.R;
 import com.afei.news.base.BaseMenuDetailPager;
@@ -18,6 +18,7 @@ import com.afei.news.domain.NewsMenuData;
 import com.afei.news.domain.TabDetailData;
 import com.afei.news.global.Constants;
 import com.afei.news.utils.CacheUtils;
+import com.afei.news.view.RefreshListView;
 import com.google.gson.Gson;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -46,7 +47,7 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
     @ViewInject(R.id.vp_top_news)
     private ViewPager vpTopNews;
     @ViewInject(R.id.lv_list_news)
-    private ListView lvListNews;
+    private RefreshListView lvListNews;
     private String mUrl;
     private ArrayList<TabDetailData.DataBean.TopnewsBean> topNews;
     private ArrayList<TabDetailData.DataBean.NewsBean> listNews;
@@ -65,6 +66,13 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
         View listHeader = View.inflate(mActivity, R.layout.lv_header_list_news, null);
         lvListNews.addHeaderView(listHeader);
         ViewUtils.inject(this,listHeader);//注入listview的头布局(listHeader)事件
+
+        lvListNews.setOnRefreshListener(new RefreshListView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getDataFromServer();
+            }
+        });
         return view;
     }
 
@@ -119,11 +127,15 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
                 processResult(result);//解析数据
                 CacheUtils.setCache(mUrl,result,mActivity);//更新缓存
 
+                lvListNews.onRefreshComplete(true);//刷新后重置相关数据
+
             }
 
             @Override
             public void onFailure(HttpException error, String msg) {
-
+                error.printStackTrace();
+                lvListNews.onRefreshComplete(false);//刷新后重置相关数据
+                Toast.makeText(mActivity,msg,Toast.LENGTH_SHORT).show();
             }
         });
     }

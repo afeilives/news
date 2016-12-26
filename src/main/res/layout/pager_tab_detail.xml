@@ -4,9 +4,10 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
-    <ListView
+    <com.afei.news.view.RefreshListView
         android:id="@+id/lv_list_news"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content">
+    </com.afei.news.view.RefreshListView>
 
 </LinearLayout>
