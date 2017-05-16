@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/ll_footer_list_news"
+              android:orientation="horizontal"
+              android:gravity="center"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateDrawable="@drawable/custom_progress"
+            android:id="@+id/pb_footer"/>
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_light"
+            android:text="加载更多..."
+            android:paddingLeft="20dp"
+            android:id="@+id/tv_loadmore"/>
+
+
+
+
+</LinearLayout>

@@ -1,6 +1,6 @@
 package com.afei.news.domain;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * 此处用来插件gsonformat自动生成
@@ -10,13 +10,13 @@ import java.util.List;
 public class NewsMenuData {
     /**
      * retcode : 200
-     * data : [{"id":10000,"title":"新闻","type":1,"children":[{"id":10007,"title":"北京","type":1,"url":"/10007/list_1.json"},{"id":10006,"title":"中国","type":1,"url":"/10006/list_1.json"},{"id":10008,"title":"国际","type":1,"url":"/10008/list_1.json"},{"id":10010,"title":"体育","type":1,"url":"/10010/list_1.json"},{"id":10091,"title":"生活","type":1,"url":"/10091/list_1.json"},{"id":10012,"title":"旅游","type":1,"url":"/10012/list_1.json"},{"id":10095,"title":"科技","type":1,"url":"/10095/list_1.json"},{"id":10009,"title":"军事","type":1,"url":"/10009/list_1.json"},{"id":10093,"title":"时尚","type":1,"url":"/10093/list_1.json"},{"id":10011,"title":"财经","type":1,"url":"/10011/list_1.json"},{"id":10094,"title":"育儿","type":1,"url":"/10094/list_1.json"},{"id":10105,"title":"汽车","type":1,"url":"/10105/list_1.json"}]},{"id":10002,"title":"专题","type":10,"url":"/10006/list_1.json","url1":"/10007/list1_1.json"},{"id":10003,"title":"组图","type":2,"url":"/10008/list_1.json"},{"id":10004,"title":"互动","type":3,"excurl":"","dayurl":"","weekurl":""}]
+     * data : [{"id":10000,"title":"新闻","type":1,"children":[{"id":10007,"title":"北京","type":1,"url":"/10007/ArrayList_1.json"},{"id":10006,"title":"中国","type":1,"url":"/10006/ArrayList_1.json"},{"id":10008,"title":"国际","type":1,"url":"/10008/ArrayList_1.json"},{"id":10010,"title":"体育","type":1,"url":"/10010/ArrayList_1.json"},{"id":10091,"title":"生活","type":1,"url":"/10091/ArrayList_1.json"},{"id":10012,"title":"旅游","type":1,"url":"/10012/ArrayList_1.json"},{"id":10095,"title":"科技","type":1,"url":"/10095/ArrayList_1.json"},{"id":10009,"title":"军事","type":1,"url":"/10009/ArrayList_1.json"},{"id":10093,"title":"时尚","type":1,"url":"/10093/ArrayList_1.json"},{"id":10011,"title":"财经","type":1,"url":"/10011/ArrayList_1.json"},{"id":10094,"title":"育儿","type":1,"url":"/10094/ArrayList_1.json"},{"id":10105,"title":"汽车","type":1,"url":"/10105/ArrayList_1.json"}]},{"id":10002,"title":"专题","type":10,"url":"/10006/ArrayList_1.json","url1":"/10007/ArrayList1_1.json"},{"id":10003,"title":"组图","type":2,"url":"/10008/ArrayList_1.json"},{"id":10004,"title":"互动","type":3,"excurl":"","dayurl":"","weekurl":""}]
      * extend : [10007,10006,10008,10014,10012,10091,10009,10010,10095]
      */
 
     private int retcode;
-    private List<DataBean> data;
-    private List<Integer> extend;
+    private ArrayList<DataBean> data;
+    private ArrayList<Integer> extend;
 
     public int getRetcode() {
         return retcode;
@@ -26,19 +26,19 @@ public class NewsMenuData {
         this.retcode = retcode;
     }
 
-    public List<DataBean> getData() {
+    public ArrayList<DataBean> getData() {
         return data;
     }
 
-    public void setData(List<DataBean> data) {
+    public void setData(ArrayList<DataBean> data) {
         this.data = data;
     }
 
-    public List<Integer> getExtend() {
+    public ArrayList<Integer> getExtend() {
         return extend;
     }
 
-    public void setExtend(List<Integer> extend) {
+    public void setExtend(ArrayList<Integer> extend) {
         this.extend = extend;
     }
 
@@ -49,9 +49,9 @@ public class NewsMenuData {
          * id : 10000
          * title : 新闻
          * type : 1
-         * children : [{"id":10007,"title":"北京","type":1,"url":"/10007/list_1.json"},{"id":10006,"title":"中国","type":1,"url":"/10006/list_1.json"},{"id":10008,"title":"国际","type":1,"url":"/10008/list_1.json"},{"id":10010,"title":"体育","type":1,"url":"/10010/list_1.json"},{"id":10091,"title":"生活","type":1,"url":"/10091/list_1.json"},{"id":10012,"title":"旅游","type":1,"url":"/10012/list_1.json"},{"id":10095,"title":"科技","type":1,"url":"/10095/list_1.json"},{"id":10009,"title":"军事","type":1,"url":"/10009/list_1.json"},{"id":10093,"title":"时尚","type":1,"url":"/10093/list_1.json"},{"id":10011,"title":"财经","type":1,"url":"/10011/list_1.json"},{"id":10094,"title":"育儿","type":1,"url":"/10094/list_1.json"},{"id":10105,"title":"汽车","type":1,"url":"/10105/list_1.json"}]
-         * url : /10006/list_1.json
-         * url1 : /10007/list1_1.json
+         * children : [{"id":10007,"title":"北京","type":1,"url":"/10007/ArrayList_1.json"},{"id":10006,"title":"中国","type":1,"url":"/10006/ArrayList_1.json"},{"id":10008,"title":"国际","type":1,"url":"/10008/ArrayList_1.json"},{"id":10010,"title":"体育","type":1,"url":"/10010/ArrayList_1.json"},{"id":10091,"title":"生活","type":1,"url":"/10091/ArrayList_1.json"},{"id":10012,"title":"旅游","type":1,"url":"/10012/ArrayList_1.json"},{"id":10095,"title":"科技","type":1,"url":"/10095/ArrayList_1.json"},{"id":10009,"title":"军事","type":1,"url":"/10009/ArrayList_1.json"},{"id":10093,"title":"时尚","type":1,"url":"/10093/ArrayList_1.json"},{"id":10011,"title":"财经","type":1,"url":"/10011/ArrayList_1.json"},{"id":10094,"title":"育儿","type":1,"url":"/10094/ArrayList_1.json"},{"id":10105,"title":"汽车","type":1,"url":"/10105/ArrayList_1.json"}]
+         * url : /10006/ArrayList_1.json
+         * url1 : /10007/ArrayList1_1.json
          * excurl :
          * dayurl :
          * weekurl :
@@ -65,7 +65,7 @@ public class NewsMenuData {
         private String excurl;
         private String dayurl;
         private String weekurl;
-        private List<ChildrenBean> children;
+        private ArrayList<ChildrenBean> children;
 
 
         @Override
@@ -139,11 +139,11 @@ public class NewsMenuData {
             this.weekurl = weekurl;
         }
 
-        public List<ChildrenBean> getChildren() {
+        public ArrayList<ChildrenBean> getChildren() {
             return children;
         }
 
-        public void setChildren(List<ChildrenBean> children) {
+        public void setChildren(ArrayList<ChildrenBean> children) {
             this.children = children;
         }
 
@@ -152,7 +152,7 @@ public class NewsMenuData {
              * id : 10007
              * title : 北京
              * type : 1
-             * url : /10007/list_1.json
+             * url : /10007/ArrayList_1.json
              */
 
             private int id;

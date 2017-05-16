@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -39,7 +38,6 @@ import java.util.ArrayList;
  */
 
 public class TabMenuDetailPager extends BaseMenuDetailPager {
-    private NewsMenuData.DataBean.ChildrenBean tabTitle;
     @ViewInject(R.id.vpi_top_news)
     private CirclePageIndicator topNewsCirclePageIndicator;
     @ViewInject(R.id.tv_top_news_title)
@@ -48,19 +46,26 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
     private ViewPager vpTopNews;
     @ViewInject(R.id.lv_list_news)
     private RefreshListView lvListNews;
-    private String mUrl;
+    private String mUrl;//12个标签页数据的url
     private ArrayList<TabDetailData.DataBean.TopnewsBean> topNews;
     private ArrayList<TabDetailData.DataBean.NewsBean> listNews;
-
+    private String mMoreUrl;
+    private String mMoreDataUrl;
+    private ListNewsAdapter mListNewsAdapter;
+    private TopNewsPagerAdapter mTopNewsPagerAdapter;
+    private NewsMenuData.DataBean.ChildrenBean mTabData;
+    private TabDetailData tabDetailData;
 
     public TabMenuDetailPager(Activity activity, NewsMenuData.DataBean.ChildrenBean tabData) {
         super(activity);
-        tabTitle = tabData;
+        mTabData = tabData;
         mUrl = Constants.SERVER_URL+tabData.getUrl() ;//标签页里数据的URL
+
     }
 
     @Override
     public View initView() {
+
         View view = View.inflate(mActivity, R.layout.pager_tab_detail,null);
         ViewUtils.inject(this,view);
         View listHeader = View.inflate(mActivity, R.layout.lv_header_list_news, null);
@@ -72,45 +77,36 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
             public void onRefresh() {
                 getDataFromServer();
             }
+            @Override
+            public void onLoadMore() {
+                if (!TextUtils.isEmpty(mMoreUrl)){
+                    mMoreDataUrl = Constants.SERVER_URL + mMoreUrl;
+                    getMoreDataFromServer();//从服务器加载更多
+                }else {
+                    lvListNews.onRefreshComplete(true);//收起加载更多
+                    Toast.makeText(mActivity,"没有更多数据了",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+
         });
         return view;
     }
+
 
     @Override
     public void initData() {
         //判断是否有缓存数据
         String tabDataCaChe = CacheUtils.getCache(mUrl,mActivity);
         if(!TextUtils.isEmpty(tabDataCaChe)){
-            processResult(tabDataCaChe);//如果有，就解析缓存
+            processResult(tabDataCaChe,false);//如果有，就解析缓存
         }
 
         //还要从服务器获取数据，为了更新缓存，优化用户体验
         getDataFromServer();
 
-        vpTopNews.setAdapter(new TopNewsPagerAdapter());
-        topNewsCirclePageIndicator.setViewPager(vpTopNews);//为圆圈指示器绑定ViewPager
-        tvTopNewsTitle.setText(topNews.get(0).getTitle());//初始化第一个头条新闻
-        topNewsCirclePageIndicator.onPageSelected(0);//调整小圆点不会来的bug
 
-        //此处要为指示器设置页面滑动监听，而不是给ViewPager
-        topNewsCirclePageIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-            @Override
-            public void onPageSelected(int position) {
-                tvTopNewsTitle.setText(topNews.get(position).getTitle());//设置头条新闻的标题
-
-            }
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-
-        lvListNews.setAdapter(new ListNewsAdapter());
 
     }
 
@@ -120,11 +116,11 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
      */
     private void getDataFromServer() {
         HttpUtils httpUtils = new HttpUtils();
-        httpUtils.send(HttpRequest.HttpMethod.GET, mUrl, new RequestCallBack<String>() {
+        httpUtils.send(HttpRequest.HttpMethod.GET,mUrl, new RequestCallBack<String>() {
             @Override
             public void onSuccess(ResponseInfo<String> responseInfo) {
                 String result = responseInfo.result;//从服务器拿到数据
-                processResult(result);//解析数据
+                processResult(result,false);//解析数据
                 CacheUtils.setCache(mUrl,result,mActivity);//更新缓存
 
                 lvListNews.onRefreshComplete(true);//刷新后重置相关数据
@@ -133,9 +129,36 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
 
             @Override
             public void onFailure(HttpException error, String msg) {
+                System.out.println("000000000000000000");
                 error.printStackTrace();
                 lvListNews.onRefreshComplete(false);//刷新后重置相关数据
                 Toast.makeText(mActivity,msg,Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    /**
+     * 此方法用于加载列表新闻的下页数据
+     */
+    private void getMoreDataFromServer() {
+        HttpUtils http = new HttpUtils();
+        System.out.println("加载更多数据"+mMoreDataUrl);
+        http.send(HttpRequest.HttpMethod.GET, mMoreDataUrl, new RequestCallBack<String>() {
+            @Override
+            public void onSuccess(ResponseInfo<String> responseInfo) {
+                String result = responseInfo.result;
+                processResult(result,true);
+                lvListNews.onRefreshComplete(true);//获取数据完成，隐藏加载更多
+
+            }
+
+            @Override
+            public void onFailure(HttpException error, String msg) {
+                error.printStackTrace();
+                Toast.makeText(mActivity,msg,Toast.LENGTH_SHORT).show();
+                lvListNews.onRefreshComplete(false);//获取数据完成，隐藏加载更多
+
             }
         });
     }
@@ -144,15 +167,54 @@ public class TabMenuDetailPager extends BaseMenuDetailPager {
      * 此处用gson解析json数据
      * @param tabDataCaChe
      */
-    private void processResult(String tabDataCaChe) {
+    private void processResult(String tabDataCaChe,boolean isMore) {
         Gson gson = new Gson();
-        TabDetailData tabDetailData = gson.fromJson(tabDataCaChe, TabDetailData.class);
-        //获取头条新闻数据
-        topNews = tabDetailData.getData().getTopnews();
-        Log.d("TopNews", this.topNews.toString());
-        listNews = tabDetailData.getData().getNews();//获取列表新闻数据
-        Log.d("ListNews",listNews.toString());
+        tabDetailData = gson.fromJson(tabDataCaChe, TabDetailData.class);
+        mMoreUrl = tabDetailData.getData().getMore();//获取更多数据url
 
+        if (!isMore){
+            //初始化头条新闻
+            topNews = tabDetailData.getData().getTopnews();
+            if (topNews!=null){
+                mTopNewsPagerAdapter = new TopNewsPagerAdapter();
+                vpTopNews.setAdapter(mTopNewsPagerAdapter);
+                topNewsCirclePageIndicator.setViewPager(vpTopNews);//为圆圈指示器绑定ViewPager
+                //此处要为指示器设置页面滑动监听，而不是给ViewPager
+                topNewsCirclePageIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+                    @Override
+                    public void onPageSelected(int position) {
+                        tvTopNewsTitle.setText(topNews.get(position).getTitle());//设置头条新闻的标题
+
+                    }
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+
+                tvTopNewsTitle.setText(topNews.get(0).getTitle());//初始化第一个头条新闻
+                topNewsCirclePageIndicator.onPageSelected(0);//调整小圆点不会来的bug
+            }
+
+            //初始化列表新闻
+            listNews = tabDetailData.getData().getNews();
+            if (listNews!=null){
+                mListNewsAdapter = new ListNewsAdapter();
+                lvListNews.setAdapter(mListNewsAdapter);
+            }
+
+        }else {
+
+            ArrayList<TabDetailData.DataBean.NewsBean> moreDatas = tabDetailData.getData().getNews();
+            System.out.println("要追加的数据"+moreDatas);
+            //获取更多数据
+            listNews.addAll(moreDatas);//追加数据
+            mListNewsAdapter.notifyDataSetChanged();//刷新适配器
+        }
     }
 
     //头条新闻的适配器

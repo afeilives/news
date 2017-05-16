@@ -17,7 +17,6 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 新闻详情页
@@ -25,7 +24,7 @@ import java.util.List;
  */
 
 public class NewsMenuDetailPager extends BaseMenuDetailPager {
-    private List<NewsMenuData.DataBean.ChildrenBean> tabDatas;//标签名,遍历这个集合就知道要几个标签页了
+    private ArrayList<NewsMenuData.DataBean.ChildrenBean> tabDatas;//标签名,遍历这个集合就知道要几个标签页了
     private ArrayList<TabMenuDetailPager> tabPagers;//标签页的集合
     @ViewInject(R.id.vpi_tabpager_title)
     private TabPageIndicator mTabPageIndicator;//标签页指示器
@@ -34,7 +33,7 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
     private ViewPager vpNewsDetail;
     private int currentItem;
 
-    public NewsMenuDetailPager(Activity activity, List<NewsMenuData.DataBean.ChildrenBean> children) {
+    public NewsMenuDetailPager(Activity activity, ArrayList<NewsMenuData.DataBean.ChildrenBean> children) {
         super(activity);
         tabDatas = children;
     }
